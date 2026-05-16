@@ -4,12 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
-export type LoginState = { error: string } | null;
-
-export async function loginAction(
-  _prev: LoginState,
-  formData: FormData
-): Promise<LoginState> {
+export async function loginAction(formData: FormData) {
   const email = (formData.get("email") as string).trim().toLowerCase();
   const senha = formData.get("senha") as string;
 
@@ -24,10 +19,9 @@ export async function loginAction(
   });
 
   if (error || !data.session) {
-    return { error: "E-mail ou senha incorretos. Tente novamente." };
+    redirect("/login?erro=credenciais");
   }
 
-  // Look up patient by email in Flask API
   const apiUrl = process.env.FLASK_API_URL!;
   const apiKey = process.env.PORTAL_API_KEY!;
 
@@ -38,12 +32,12 @@ export async function loginAction(
       { headers: { "X-API-Key": apiKey }, cache: "no-store" }
     );
     if (!resp.ok) {
-      return { error: "Paciente não encontrado. Entre em contato com a clínica." };
+      redirect("/login?erro=nao_encontrado");
     }
     const json = await resp.json();
     pid = json.pid;
   } catch {
-    return { error: "Erro de conexão com o servidor. Tente novamente." };
+    redirect("/login?erro=conexao");
   }
 
   const cookieStore = await cookies();
@@ -55,7 +49,7 @@ export async function loginAction(
     path: "/",
   };
   cookieStore.set("hpc_token", data.session.access_token, opts);
-  cookieStore.set("hpc_pid", pid, opts);
+  cookieStore.set("hpc_pid", pid!, opts);
 
   redirect("/dashboard");
 }
