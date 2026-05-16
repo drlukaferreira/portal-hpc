@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { BioChart } from "./BioChart";
+import { DynamicBioChart } from "./DynamicBioChart";
 
 type DashData = {
   nome: string;
@@ -314,7 +314,7 @@ export default async function DashboardPage() {
           <Card>
             <SectionLabel>Evolução Corporal</SectionLabel>
             <div className="h-[200px]">
-              <BioChart data={bio_chart} />
+              <DynamicBioChart data={bio_chart} />
             </div>
           </Card>
         )}
