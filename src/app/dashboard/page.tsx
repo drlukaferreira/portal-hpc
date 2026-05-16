@@ -92,12 +92,15 @@ export default async function DashboardPage() {
   const pid = cookieStore.get("hpc_pid")?.value;
   if (!pid) redirect("/login");
 
-  let data: DashData;
+  // Note: redirect() cannot be called inside try/catch in Next.js
+  let data: DashData | null = null;
   try {
-    data = await fetchDashData(pid);
-  } catch {
-    redirect("/login");
+    data = await fetchDashData(pid!);
+  } catch (e) {
+    console.error("fetchDashData error:", e);
   }
+
+  if (!data) redirect("/login");
 
   const {
     nome,
@@ -116,7 +119,7 @@ export default async function DashboardPage() {
     bio_chart,
     consultas_hist,
     atend_hist,
-  } = data;
+  } = data!;
 
   const primeiroNome = nome.split(" ")[0];
 
