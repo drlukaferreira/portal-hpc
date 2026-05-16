@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import Image from "next/image";
 import { DynamicBioChart } from "./DynamicBioChart";
 
 type DashData = {
@@ -168,23 +167,8 @@ export default async function DashboardPage() {
         }}
       >
         <div className="flex items-center gap-3">
-          <div className="relative w-[110px] h-[34px]">
-            <Image
-              src="/logo_hpc.png"
-              alt="HPC"
-              fill
-              style={{ objectFit: "contain", objectPosition: "left" }}
-              priority
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = "none";
-                document.getElementById("nb-fb")!.style.display = "flex";
-              }}
-            />
-            <div id="nb-fb" className="hidden flex-col" style={{ display: "none" }}>
-              <span className="text-[#C9A84C] text-[11px] font-bold tracking-[1.5px] uppercase leading-tight">HPC</span>
-              <span className="text-[#444] text-[9px] tracking-[2px] uppercase">Portal</span>
-            </div>
-          </div>
+          <span className="text-[#C9A84C] text-[13px] font-bold tracking-[2px] uppercase">HPC</span>
+          <span className="text-[#333] text-[10px] tracking-[2px] uppercase hidden sm:inline">Portal do Paciente</span>
         </div>
         <form action="/logout" method="GET">
           <button
